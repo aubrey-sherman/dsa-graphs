@@ -1,4 +1,5 @@
 import { UGraphNodeStr } from "../graph/graph";
+import { Queue } from "../common/queue";
 
 
 /*
@@ -39,13 +40,53 @@ function rDfs(
 /** Return array of nodes, in DFS order (iterative version)  */
 
 function iDfs(start: UGraphNodeStr): UGraphNodeStr[] {
-  return ["todo"];
+
+  // initialize a set for visited and put the starting node in it
+  const toVisit = [start];
+  const visited = new Set();
+
+  // initialize an array to return
+  const result: UGraphNodeStr[] = [];
+
+  // as long as we have a node in our stack
+  while (!(toVisit.length === 0)) {
+    const currNode = toVisit.pop()!;
+    // check whether the current node has been visited, and if NOT--
+    if (!visited.has(currNode)) {
+      result.push(currNode);
+      visited.add(currNode);
+      toVisit.push(...currNode.adjacent);
+    }
+  }
+
+  return result;
 }
 
 /** Return array of nodes, in BFS order (iterative version)  */
 
 function bfs(start: UGraphNodeStr): UGraphNodeStr[] {
-  return ["todo"];
+
+  const toVisit = new Queue([start]);
+  const visited = new Set();
+
+  const result: UGraphNodeStr[] = [];
+
+  while (!(toVisit.isEmpty())) {
+    const currNode = toVisit.dequeue();
+
+    if (!visited.has(currNode)) {
+      // add to result
+      result.push(currNode);
+      // add to visited
+      visited.add(currNode);
+      // add its adjacent nodes to the queue
+      for (const adj of currNode.adjacent) {
+        toVisit.enqueue(adj) ;
+      }
+    }
+  }
+
+  return result;
 }
 
 
